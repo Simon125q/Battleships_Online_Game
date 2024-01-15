@@ -11,6 +11,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     private Grid radarGrid;
     private Grid playerGrid;
     private Ship shipToPlace;
+    private int shipToPlaceIndex;
 
     public GamePanel() {
         setBackground(BACKGROUND_COLOR);
@@ -26,6 +27,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         radarGrid.reset();
         playerGrid.reset();
         gamePhase = SHIP_PLACING;
+        shipToPlace = new Ship(playerGrid.getGridPosition(playerGrid.getPosition()), SHIPS_SIZES[0], true);
+        shipToPlaceIndex = 0;
     }
 
     public void makeShot(Position targePosition) {

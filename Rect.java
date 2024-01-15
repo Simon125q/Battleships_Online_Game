@@ -24,7 +24,7 @@ public class Rect {
         return height;
     }
 
-    public Position gePosition() {
+    public Position getPosition() {
         return position;
     }
 
