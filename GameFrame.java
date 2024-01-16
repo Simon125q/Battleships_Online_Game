@@ -17,7 +17,7 @@ public class GameFrame extends JFrame implements KeyListener{
     public GameFrame() {
         super(NAME);
 
-        getIpAndPort();
+        //getIpAndPort();
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);

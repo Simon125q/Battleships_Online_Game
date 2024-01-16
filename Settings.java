@@ -25,7 +25,7 @@ public interface Settings {
     public final Color HIT_COLOR_SEA = new Color(220, 23, 23, 180);
     public final Color MISS_COLOR_SEA = new Color(30, 30, 97, 180);
     public final Color HIT_COLOR_RADAR = new Color(220, 23, 23, 180);
-    public final Color MISS_COLOR_RADAR = new Color(30, 30, 97, 180);
+    public final Color MISS_COLOR_RADAR = new Color(0, 153, 0, 180);
 
     public final int PADDING = 3;
 

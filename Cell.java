@@ -16,6 +16,7 @@ public class Cell extends Rect implements Settings{
     public void reset() {
         isShown = false;
         shipHit = false;
+        ship = null;
     }
 
     public void getShot() {

@@ -117,7 +117,10 @@ public class Grid extends Rect implements Settings{
     }
     
     private void paintGrid(Graphics g) {
-        g.setColor(Color.BLACK);
+        if (boardType == SEA)
+            g.setColor(Color.BLACK);
+        else
+            g.setColor(Color.WHITE);
 
         for (int x = 0; x <= GRID_WIDTH; x++) {
             g.drawLine(position.x + x * TILE_W, position.y,

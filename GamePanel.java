@@ -1,9 +1,13 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class GamePanel extends JPanel implements MouseListener, MouseMotionListener, Settings {
 
@@ -12,15 +16,26 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     private Grid playerGrid;
     private Ship shipToPlace;
     private int shipToPlaceIndex;
+    private BufferedImage backgroundImage;
 
     public GamePanel() {
         setBackground(BACKGROUND_COLOR);
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        getBackgroundImage();
         addMouseListener(this);
         addMouseMotionListener(this);
         radarGrid = new Grid(new Position(BOARD_OFFSET_X * TILE_W, BOARD_OFFSET_Y * TILE_H), RADAR);
         playerGrid = new Grid(new Position(BOARD_OFFSET_X * TILE_W, (BOARD_OFFSET_Y * 2 + GRID_WIDTH) * TILE_H), SEA);
         reset();
+    }
+
+    private void getBackgroundImage() {
+        String imagePath = "background.png";
+        try {
+            backgroundImage = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void reset() {
@@ -79,6 +94,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
     public void paint(Graphics g) {
         super.paint(g);
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
         radarGrid.paint(g);
         playerGrid.paint(g);
 
