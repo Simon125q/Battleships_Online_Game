@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.Graphics;
 
 public class Cell extends Rect implements Settings{
@@ -20,6 +19,10 @@ public class Cell extends Rect implements Settings{
     }
 
     public void getShot() {
+        if (isShip()) {
+            shipHit = true;
+            ship.getHit();
+        }
         isShown = true;
     }
 

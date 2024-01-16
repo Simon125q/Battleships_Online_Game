@@ -27,7 +27,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         radarGrid.reset();
         playerGrid.reset();
         gamePhase = SHIP_PLACING;
-        shipToPlace = new Ship(playerGrid.getGridPosition(playerGrid.getPosition()), SHIPS_SIZES[0], true);
+        shipToPlace = new Ship(playerGrid.getGridPosition(playerGrid.getPosition()), SHIPS_SIZES[0], true, SEA);
         shipToPlaceIndex = 0;
     }
 
@@ -69,10 +69,11 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     private void checkIfStillShipsToPlace(Position gridPosition) {
         shipToPlaceIndex++;
         if (shipToPlaceIndex < SHIPS_SIZES.length) {
-            shipToPlace = new Ship(gridPosition, SHIPS_SIZES[shipToPlaceIndex], true);
+            shipToPlace = new Ship(gridPosition, SHIPS_SIZES[shipToPlaceIndex], true, SEA);
         }
         else {
             gamePhase = SHOOTING;
+            radarGrid.deepCopy(playerGrid);
         }
     }
 
@@ -106,7 +107,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
                 break;
         }
     }
-
 
     @Override
     public void mouseReleased(MouseEvent e) {

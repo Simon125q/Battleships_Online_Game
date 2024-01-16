@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 public class Grid extends Rect implements Settings{
 
-    
-
     private Cell[][] cells = new Cell[GRID_WIDTH][GRID_HEIGHT];
     private ArrayList<Ship> ships;
     private boolean areShipsVisible;
@@ -21,7 +19,7 @@ public class Grid extends Rect implements Settings{
             areShipsVisible = true;
         }
         else if (boardType == RADAR) {
-            areShipsVisible = false;
+            areShipsVisible = true;
         }
 
         initGrid();
@@ -83,7 +81,10 @@ public class Grid extends Rect implements Settings{
 
     public void placeShip(Ship shipToPlace, Position gridPosition) {
         ships.add(shipToPlace);
+        addShipToCells(shipToPlace, gridPosition);
+    }
 
+    private void addShipToCells(Ship shipToPlace, Position gridPosition) {
         if (shipToPlace.isVertical()) {
             for (int y = 0; y < shipToPlace.getSize(); y++) {
                 cells[gridPosition.x][gridPosition.y + y].setAsShip(shipToPlace);
@@ -94,6 +95,15 @@ public class Grid extends Rect implements Settings{
                 cells[gridPosition.x + x][gridPosition.y].setAsShip(shipToPlace);
             }
         }
+    }
+
+    public void deepCopy(Grid otherGrid) {
+        this.ships.clear();
+        for (int shipIndex = 0; shipIndex < otherGrid.ships.size(); shipIndex++) {
+            this.ships.add(new Ship(otherGrid.ships.get(shipIndex)));
+            this.ships.get(shipIndex).setBoardType(RADAR);
+            addShipToCells(ships.get(shipIndex), ships.get(shipIndex).getPosition());
+        }        
     }
 
     public void paint(Graphics g) {
