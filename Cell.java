@@ -6,6 +6,7 @@ public class Cell extends Rect implements Settings{
     private boolean isShown;
     private boolean shipHit;
     private int boardType;
+    private Ship ship;
 
     public Cell(int x, int y, int width, int height, int boardType) {
         super(x, y, width, height);
@@ -20,6 +21,17 @@ public class Cell extends Rect implements Settings{
 
     public void getShot() {
         isShown = true;
+    }
+
+    public void setAsShip(Ship ship) {
+        this.ship = ship;
+    }
+
+    public boolean isShip() {
+        if (ship != null)
+            return true;
+        else
+            return false;
     }
 
     public void paint(Graphics g) {

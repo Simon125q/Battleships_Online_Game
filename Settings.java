@@ -5,7 +5,7 @@ public interface Settings {
     public static final int TILE_W = 32;
     public static final int TILE_H = 32;
     public static final int TILE_ROWS = 25;
-    public static final int TILE_COLS = 15;
+    public static final int TILE_COLS = 14;
     public static final int GRID_WIDTH = 10;
     public static final int GRID_HEIGHT = 10;
     public static final int WINDOW_WIDTH = TILE_COLS * TILE_W;

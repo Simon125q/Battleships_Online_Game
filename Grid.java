@@ -57,6 +57,45 @@ public class Grid extends Rect implements Settings{
         cells[targetGridPosition.x][targetGridPosition.y].getShot();
     }
 
+    public boolean canPlaceShipAt(Position gridPosition, int size, boolean isVertical) {
+        if (isVertical) {
+            if (gridPosition.x > GRID_WIDTH || gridPosition.y + size > GRID_HEIGHT)
+                return false;
+        }
+        else {
+            if (gridPosition.y > GRID_HEIGHT || gridPosition.x + size > GRID_WIDTH)
+                return false;
+        }
+        for (int shipSegment = 0; shipSegment < size; shipSegment++) {
+            if (isVertical) {
+                if (cells[gridPosition.x][gridPosition.y + shipSegment].isShip()) {
+                    return false;
+                } 
+            }
+            else {
+                if (cells[gridPosition.x + shipSegment][gridPosition.y].isShip()) {
+                    return false;
+                } 
+            }
+        }
+        return true;
+    }
+
+    public void placeShip(Ship shipToPlace, Position gridPosition) {
+        ships.add(shipToPlace);
+
+        if (shipToPlace.isVertical()) {
+            for (int y = 0; y < shipToPlace.getSize(); y++) {
+                cells[gridPosition.x][gridPosition.y + y].setAsShip(shipToPlace);
+            }
+        }
+        else {
+            for (int x = 0; x < shipToPlace.getSize(); x++) {
+                cells[gridPosition.x + x][gridPosition.y].setAsShip(shipToPlace);
+            }
+        }
+    }
+
     public void paint(Graphics g) {
         for (int ship_index = 0; ship_index < ships.size(); ship_index++) {
             if (areShipsVisible) {

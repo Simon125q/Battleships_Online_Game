@@ -37,6 +37,45 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         radarGrid.getShot(targetGridPos);
     }
 
+    private void moveShip(Position mousePosition) {
+        if (playerGrid.isInside(mousePosition)) {
+            Position gridPos = playerGrid.getGridPosition(mousePosition);
+            updateShipPosition(gridPos);
+        }
+    }
+
+    private void updateShipPosition(Position gridPosition) {
+        shipToPlace.setPosition(gridPosition);
+
+        if (playerGrid.canPlaceShipAt(gridPosition, shipToPlace.getSize(), shipToPlace.isVertical())) {
+            shipToPlace.setShipPlacementType(RIGHT_PLACEMENT);
+        }
+        else {
+            shipToPlace.setShipPlacementType(WRONG_PLACEMENT);
+        }
+    }
+
+    private void placeShip(Position mousePosition) {
+        Position gridPosition = playerGrid.getGridPosition(mousePosition);
+        updateShipPosition(gridPosition);
+        if (shipToPlace.getShipPlacementType() != RIGHT_PLACEMENT) {
+            return;
+        }
+        shipToPlace.setShipPlacementType(PLACED_ALIVE);
+        playerGrid.placeShip(shipToPlace, gridPosition);
+        checkIfStillShipsToPlace(gridPosition);
+    }
+
+    private void checkIfStillShipsToPlace(Position gridPosition) {
+        shipToPlaceIndex++;
+        if (shipToPlaceIndex < SHIPS_SIZES.length) {
+            shipToPlace = new Ship(gridPosition, SHIPS_SIZES[shipToPlaceIndex], true);
+        }
+        else {
+            gamePhase = SHOOTING;
+        }
+    }
+
     public void paint(Graphics g) {
         super.paint(g);
         radarGrid.paint(g);
@@ -57,19 +96,42 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
                 reset();
                 break;
 
+            case KeyEvent.VK_SPACE:
+                if (gamePhase == SHIP_PLACING) {
+                    shipToPlace.turn();
+                    repaint();
+                }
+
             default:
                 break;
         }
     }
 
-    @Override
-    public void mouseDragged(MouseEvent e) {}
 
     @Override
-    public void mouseMoved(MouseEvent e) {
+    public void mouseReleased(MouseEvent e) {
+        Position mousePosition = new Position(e.getX(), e.getY());
+        if (gamePhase == SHIP_PLACING && playerGrid.isInside(mousePosition)) {
+            placeShip(mousePosition);
+        }
+        else if (gamePhase == SHOOTING && radarGrid.isInside(mousePosition)) {
+            makeShot(mousePosition);
+        }
 
         repaint();
     }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (gamePhase == SHIP_PLACING) {
+            Position mousePosition = new Position(e.getX(), e.getY());
+            moveShip(mousePosition);
+            repaint();
+        }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {}
 
     @Override
     public void mouseClicked(MouseEvent e) {}
@@ -83,13 +145,4 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     @Override
     public void mousePressed(MouseEvent e) {}
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        Position mousePosition = new Position(e.getX(), e.getY());
-        if (radarGrid.isInside(mousePosition)) {
-            makeShot(mousePosition);
-        }
-
-        repaint();
-    }
 }
