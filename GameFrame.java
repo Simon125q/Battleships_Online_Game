@@ -28,10 +28,10 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
         super(NAME);
         try {
             int serverChoice = serverDecisionMessage();
-            
-            initConnection(serverChoice);
-            getIpAndPort();
 
+            getIpAndPort();
+            initConnection(serverChoice);
+            
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setResizable(false);
 
@@ -104,11 +104,17 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
         boolean didHeHit;
         if (shipsPlaced && !opponentPlacedShips) {
             opponentPlacedShips = true;
+            if (gamePanel.gamePhase == SHOOTING && myTurn) {
+                gamePanel.infoBar.update(MY_TURN);
+                gamePanel.repaint();
+            }
+            
         }
         else if (targetX != -1 && targetY != -1){
             didHeHit = gamePanel.opponentFired(targetX, targetY);
             sendData(true, true, didHeHit, -1, -1);
             myTurn = true;
+            gamePanel.infoBar.update(MY_TURN);
         }
         else {
             if (!isAlive) {

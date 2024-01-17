@@ -11,13 +11,14 @@ import java.io.IOException;
 
 public class GamePanel extends JPanel implements MouseListener, MouseMotionListener, Settings {
     
-    private int gamePhase;
+    public int gamePhase;
     private Grid radarGrid;
     private Grid playerGrid;
     private Ship shipToPlace;
     private int shipToPlaceIndex;
     private BufferedImage backgroundImage;
     private GameFrame game;
+    public InfoBar infoBar;
 
     public GamePanel(GameFrame game) {
         this.game = game;
@@ -28,6 +29,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         addMouseMotionListener(this);
         radarGrid = new Grid(new Position(BOARD_OFFSET_X * TILE_W, BOARD_OFFSET_Y * TILE_H), RADAR);
         playerGrid = new Grid(new Position(BOARD_OFFSET_X * TILE_W, (BOARD_OFFSET_Y * 2 + GRID_WIDTH) * TILE_H), SEA);
+        infoBar = new InfoBar(new Position(2 * TILE_W, (GRID_HEIGHT + 2) * TILE_H));
         reset();
     }
 
@@ -46,6 +48,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         gamePhase = SHIP_PLACING;
         shipToPlace = new Ship(playerGrid.getGridPosition(playerGrid.getPosition()), SHIPS_SIZES[0], true, SEA);
         shipToPlaceIndex = 0;
+        infoBar.update(PLACING);
     }
 
     public void makeShot(Position targePosition) {
@@ -53,6 +56,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         game.lastShot = new Position(targetGridPos);
         game.sendData(true, true, false, targetGridPos.x, targetGridPos.y);
         game.myTurn = false;
+        infoBar.update(OPP_TURN);
     }
 
     public void checkMyShot(Position targetGridPos, boolean isHit) {
@@ -111,20 +115,29 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         }
         else {
             gamePhase = SHOOTING;
+            if (!game.opponentPlacedShips) {
+                infoBar.update(WAITING);
+            }
+            else {
+                if (game.myTurn)
+                    infoBar.update(MY_TURN);
+                else
+                    infoBar.update(OPP_TURN);
+            }
             game.sendData(true, true, false, -1, -1);
             //radarGrid.deepCopy(playerGrid);
         }
     }
-
-   
 
     public void paint(Graphics g) {
         super.paint(g);
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
+        
         radarGrid.paint(g);
         playerGrid.paint(g);
+        infoBar.paint(g);
 
         if (gamePhase == SHIP_PLACING) {
             shipToPlace.paint(g);

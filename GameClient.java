@@ -35,7 +35,7 @@ public class GameClient extends Thread {
             ioe.printStackTrace();
         }
         catch (NullPointerException npe) {
-            System.out.println("Opponent disconnected");
+            System.out.println("Server disconnected");
         }
         finally {
             try {

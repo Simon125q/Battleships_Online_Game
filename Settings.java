@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 
 public interface Settings {
     
@@ -43,4 +44,14 @@ public interface Settings {
     // server
     public final int JOIN = 0;
     public final int CREATE = 1;
+
+    // info bar
+    public final int BAR_WIDTH = 10;
+    public final int BAR_HEIGHT = 2;
+    public final Color BAR_FONT_COLOR = Color.RED;
+    public final Font BAR_FONT = new Font("Arial", Font.BOLD, 22);
+    public final String MY_TURN = "Your turn";
+    public final String OPP_TURN = "Opponents turn";
+    public final String WAITING = "Waiting for opponent";
+    public final String PLACING = "Placing Ships";
 }
