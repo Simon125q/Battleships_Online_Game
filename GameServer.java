@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class GameServer extends Thread {
 
@@ -15,10 +16,11 @@ public class GameServer extends Thread {
     private OutputStreamWriter writer = null;
     private BufferedReader bufferedReader = null;
     private BufferedWriter bufferedWriter = null;
+    private GameFrame game;
 
-    GameServer(int port) throws IOException {
+    GameServer(int port, GameFrame game) throws IOException {
         this.port = port;
-        
+        this.game = game;
     }
 
     public void run() {
@@ -32,7 +34,8 @@ public class GameServer extends Thread {
                 
             }
             catch (IOException ioe) {
-                ioe.printStackTrace();
+                //ioe.printStackTrace();
+                System.out.println("Client disconnected");
             }
             finally {
                 try {
@@ -48,8 +51,14 @@ public class GameServer extends Thread {
         }
     }
 
-    public void sendData(boolean shipsPlaced, boolean isAlive, boolean isHit, int TargetX, int TargetY) {
-
+    public void sendData(boolean shipsPlaced, boolean isAlive, boolean isHit, int targetX, int targetY) {
+        String dataToSend = shipsPlaced + "_" + isAlive + "_" + isHit + "_" + targetX + "_" + targetY;
+        try {
+            sendMessage(dataToSend);
+        }
+        catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
     private void initServer() throws IOException {
@@ -89,9 +98,22 @@ public class GameServer extends Thread {
 
     private void receiveMessage() throws IOException{
         String recivedMsg = bufferedReader.readLine();
-        System.out.println("Client: " + recivedMsg);
-        if (recivedMsg.equalsIgnoreCase("Ping")) {
-            sendMessage("Pong");
+        
+        if (recivedMsg.equalsIgnoreCase("Connect")) {
+            System.out.println("Client connected");
+            sendMessage("Connected");
+        }
+        else {
+            System.out.println(recivedMsg);
+            String[] msgData = recivedMsg.split("_");
+            
+            boolean shipsPlaced = Boolean.parseBoolean(msgData[0]);
+            boolean isAlive = Boolean.parseBoolean(msgData[1]);
+            boolean isHit = Boolean.parseBoolean(msgData[2]);
+            int targetX = Integer.parseInt(msgData[3]);
+            int targetY = Integer.parseInt(msgData[4]);
+            
+            game.getOpponentUpdate(shipsPlaced, isAlive, isHit, targetX, targetY);
         }
     }
 }

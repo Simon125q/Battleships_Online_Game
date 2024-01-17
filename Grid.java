@@ -7,7 +7,7 @@ public class Grid extends Rect implements Settings{
     private Cell[][] cells = new Cell[GRID_WIDTH][GRID_HEIGHT];
     private ArrayList<Ship> ships;
     private boolean areShipsVisible;
-    private boolean shipsDestroyed;
+    //private boolean shipsDestroyed;
     private int boardType;
 
     public Grid(Position position, int boardType) {
@@ -41,7 +41,7 @@ public class Grid extends Rect implements Settings{
             }
         }
         ships.clear();
-        shipsDestroyed = false;
+        //shipsDestroyed = false;
     }
 
     public Position getGridPosition(Position pixelPosition) {
@@ -51,8 +51,13 @@ public class Grid extends Rect implements Settings{
         return gridPos;
     }
 
-    public void getShot(Position targetGridPosition) {
+    public boolean getShot(Position targetGridPosition) {
         cells[targetGridPosition.x][targetGridPosition.y].getShot();
+        return cells[targetGridPosition.x][targetGridPosition.y].isShip();
+    }
+
+    public void getMarkedShot(Position targetGridPosition, boolean isHit) {
+        cells[targetGridPosition.x][targetGridPosition.y].markShot(isHit);
     }
 
     public boolean canPlaceShipAt(Position gridPosition, int size, boolean isVertical) {

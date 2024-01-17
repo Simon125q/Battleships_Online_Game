@@ -10,15 +10,17 @@ import java.io.File;
 import java.io.IOException;
 
 public class GamePanel extends JPanel implements MouseListener, MouseMotionListener, Settings {
-
+    
     private int gamePhase;
     private Grid radarGrid;
     private Grid playerGrid;
     private Ship shipToPlace;
     private int shipToPlaceIndex;
     private BufferedImage backgroundImage;
+    private GameFrame game;
 
-    public GamePanel() {
+    public GamePanel(GameFrame game) {
+        this.game = game;
         setBackground(BACKGROUND_COLOR);
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         getBackgroundImage();
@@ -48,8 +50,20 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
     public void makeShot(Position targePosition) {
         Position targetGridPos = radarGrid.getGridPosition(targePosition);
+        game.lastShot = new Position(targetGridPos);
+        game.sendData(true, true, false, targetGridPos.x, targetGridPos.y);
+        game.myTurn = false;
+    }
 
-        radarGrid.getShot(targetGridPos);
+    public void checkMyShot(Position targetGridPos, boolean isHit) {
+        radarGrid.getMarkedShot(targetGridPos, isHit);
+        repaint();
+    }
+
+    public boolean opponentFired(int targetX, int targetY) {
+        boolean isHit = playerGrid.getShot(new Position(targetX, targetY));
+        repaint();
+        return isHit;
     }
 
     private void moveShip(Position mousePosition) {
@@ -88,9 +102,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         }
         else {
             gamePhase = SHOOTING;
-            radarGrid.deepCopy(playerGrid);
+            game.sendData(true, true, false, -1, -1);
+            //radarGrid.deepCopy(playerGrid);
         }
     }
+
+   
 
     public void paint(Graphics g) {
         super.paint(g);
@@ -132,7 +149,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         if (gamePhase == SHIP_PLACING && playerGrid.isInside(mousePosition)) {
             placeShip(mousePosition);
         }
-        else if (gamePhase == SHOOTING && radarGrid.isInside(mousePosition)) {
+        else if (game.myTurn && gamePhase == SHOOTING && game.opponentPlacedShips && radarGrid.isInside(mousePosition)) {
             makeShot(mousePosition);
         }
 

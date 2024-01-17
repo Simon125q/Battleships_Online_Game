@@ -17,8 +17,10 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
     private String ip = "localhost";
     private int port = 1331;
     private boolean isServer;
-    
+
+    public Position lastShot = null;
     public boolean myTurn;
+    public boolean opponentPlacedShips = false;
 
     GamePanel gamePanel;
 
@@ -32,7 +34,7 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setResizable(false);
 
-            gamePanel = new GamePanel();
+            gamePanel = new GamePanel(this);
             getContentPane().add(gamePanel);
 
             addKeyListener(this);
@@ -73,27 +75,46 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
 
     private void initConnection(int serverChoice) throws IOException{
         if (serverChoice == JOIN) {
-            client = new GameClient(ip, port);
+            client = new GameClient(ip, port, this);
             client.start();
             isServer = false;
             myTurn = false;
         }
         else {
-            server = new GameServer(port);
+            server = new GameServer(port, this);
             server.start();
             isServer = true;
             myTurn = true;
         }
     }
 
-    public void sendData(boolean shipsPlaced, boolean isAlive, boolean isHit, int TargetX, int TargetY) {
+    public void sendData(boolean shipsPlaced, boolean isAlive, boolean isHit, int targetX, int targetY) {
         if (isServer) {
-            server.sendData(shipsPlaced, isAlive, isHit, TargetX, TargetY);
+            server.sendData(shipsPlaced, isAlive, isHit, targetX, targetY);
         }
         else {
-            client.sendData(shipsPlaced, isAlive, isHit, TargetX, TargetY);
+            client.sendData(shipsPlaced, isAlive, isHit, targetX, targetY);
         }
-        myTurn = false;
+    }
+
+    public void getOpponentUpdate(boolean shipsPlaced, boolean isAlive, boolean isHit, int targetX, int targetY) {
+        boolean didHeHit;
+        if (shipsPlaced && !opponentPlacedShips) {
+            opponentPlacedShips = true;
+        }
+        else if (targetX != -1 && targetY != -1){
+            didHeHit = gamePanel.opponentFired(targetX, targetY);
+            sendData(true, true, didHeHit, -1, -1);
+            myTurn = true;
+        }
+        else {
+            if (lastShot != null)
+                gamePanel.checkMyShot(lastShot, isHit);
+            
+        }
+        
+        
+        System.out.println(shipsPlaced + " " + isAlive + " " + isHit + " " + targetX + " " + targetY);
     }
 
     @Override

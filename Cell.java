@@ -27,6 +27,12 @@ public class Cell extends Rect implements Settings{
         isShown = true;
     }
 
+    public void markShot(boolean isHit) {
+        if (isHit)
+            shipHit = true;
+        isShown = true;
+    }
+
     public void setAsShip(Ship ship) {
         this.ship = ship;
     }
