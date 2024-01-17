@@ -58,7 +58,7 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
                 "Server choice",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
                 null, options, options[0]);   
-        System.out.println(serverChoice);
+    
         return serverChoice;
     }
 
@@ -108,13 +108,33 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
             myTurn = true;
         }
         else {
-            if (lastShot != null)
+            if (!isAlive) {
+                displayEndScreen("Congratulations! You Won");
+            }
+            else if (lastShot != null)
                 gamePanel.checkMyShot(lastShot, isHit);
-            
         }
-        
-        
-        System.out.println(shipsPlaced + " " + isAlive + " " + isHit + " " + targetX + " " + targetY);
+        //System.out.println(shipsPlaced + " " + isAlive + " " + isHit + " " + targetX + " " + targetY);
+    }
+
+    public void displayGameLost() {
+        displayEndScreen("Game Over!");
+    }
+
+    private void displayEndScreen(String msg) {
+        String[] options = new String[] {"Restart", "Exit"};
+    
+        int choice = JOptionPane.showOptionDialog(null, msg,
+                "Game ended",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, options, options[0]);   
+        if (choice == 0) {
+            gamePanel.reset();
+            lastShot = null;
+        }
+        else if (choice == 1) {
+            System.exit(1);
+        }
     }
 
     @Override

@@ -40,7 +40,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         }
     }
 
-    private void reset() {
+    public void reset() {
         radarGrid.reset();
         playerGrid.reset();
         gamePhase = SHIP_PLACING;
@@ -62,8 +62,16 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
     public boolean opponentFired(int targetX, int targetY) {
         boolean isHit = playerGrid.getShot(new Position(targetX, targetY));
+        checkIfStillAlive();
         repaint();
         return isHit;
+    }
+
+    private void checkIfStillAlive() {
+        if (playerGrid.shipsDestroyed) {
+            game.sendData(true, false, false, -1, -1);
+            game.displayGameLost();
+        }
     }
 
     private void moveShip(Position mousePosition) {
@@ -74,10 +82,11 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     }
 
     private void updateShipPosition(Position gridPosition) {
-        shipToPlace.setPosition(gridPosition);
+        
 
         if (playerGrid.canPlaceShipAt(gridPosition, shipToPlace.getSize(), shipToPlace.isVertical())) {
             shipToPlace.setShipPlacementType(RIGHT_PLACEMENT);
+            shipToPlace.setPosition(gridPosition);
         }
         else {
             shipToPlace.setShipPlacementType(WRONG_PLACEMENT);
@@ -145,7 +154,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        Position mousePosition = new Position(e.getX(), e.getY());
+        Position mousePosition = new Position(e.getX() - 1, e.getY() - 1);
         if (gamePhase == SHIP_PLACING && playerGrid.isInside(mousePosition)) {
             placeShip(mousePosition);
         }

@@ -7,7 +7,7 @@ public class Grid extends Rect implements Settings{
     private Cell[][] cells = new Cell[GRID_WIDTH][GRID_HEIGHT];
     private ArrayList<Ship> ships;
     private boolean areShipsVisible;
-    //private boolean shipsDestroyed;
+    public boolean shipsDestroyed;
     private int boardType;
 
     public Grid(Position position, int boardType) {
@@ -41,7 +41,7 @@ public class Grid extends Rect implements Settings{
             }
         }
         ships.clear();
-        //shipsDestroyed = false;
+        shipsDestroyed = false;
     }
 
     public Position getGridPosition(Position pixelPosition) {
@@ -53,6 +53,7 @@ public class Grid extends Rect implements Settings{
 
     public boolean getShot(Position targetGridPosition) {
         cells[targetGridPosition.x][targetGridPosition.y].getShot();
+        checkShips();
         return cells[targetGridPosition.x][targetGridPosition.y].isShip();
     }
 
@@ -62,12 +63,14 @@ public class Grid extends Rect implements Settings{
 
     public boolean canPlaceShipAt(Position gridPosition, int size, boolean isVertical) {
         if (isVertical) {
-            if (gridPosition.x > GRID_WIDTH || gridPosition.y + size > GRID_HEIGHT)
+            if (gridPosition.x >= GRID_WIDTH || gridPosition.y + size - 1 >= GRID_HEIGHT) {
                 return false;
+            }
         }
         else {
-            if (gridPosition.y > GRID_HEIGHT || gridPosition.x + size > GRID_WIDTH)
+            if (gridPosition.y >= GRID_HEIGHT || gridPosition.x + size - 1 >= GRID_WIDTH) {
                 return false;
+            }
         }
         for (int shipSegment = 0; shipSegment < size; shipSegment++) {
             if (isVertical) {
@@ -98,6 +101,16 @@ public class Grid extends Rect implements Settings{
         else {
             for (int x = 0; x < shipToPlace.getSize(); x++) {
                 cells[gridPosition.x + x][gridPosition.y].setAsShip(shipToPlace);
+            }
+        }
+    }
+
+    private void checkShips() {
+        shipsDestroyed = true;
+        for (int shipIndex = 0; shipIndex < ships.size(); shipIndex++) {
+            if (ships.get(shipIndex).isAlive()) {
+                shipsDestroyed = false;
+                break;
             }
         }
     }

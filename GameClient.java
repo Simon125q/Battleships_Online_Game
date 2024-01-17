@@ -34,6 +34,9 @@ public class GameClient extends Thread {
         catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        catch (NullPointerException npe) {
+            System.out.println("Opponent disconnected");
+        }
         finally {
             try {
                 closeClient();
@@ -96,7 +99,7 @@ public class GameClient extends Thread {
             System.out.println("Connected to server");
         }
         else {
-            System.out.println(recivedMsg);
+            //System.out.println(recivedMsg);
             String[] msgData = recivedMsg.split("_");
             
             boolean shipsPlaced = Boolean.parseBoolean(msgData[0]);

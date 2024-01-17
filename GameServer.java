@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class GameServer extends Thread {
 
@@ -34,7 +33,9 @@ public class GameServer extends Thread {
                 
             }
             catch (IOException ioe) {
-                //ioe.printStackTrace();
+                ioe.printStackTrace();
+            }
+            catch (NullPointerException npe) {
                 System.out.println("Client disconnected");
             }
             finally {
@@ -104,7 +105,7 @@ public class GameServer extends Thread {
             sendMessage("Connected");
         }
         else {
-            System.out.println(recivedMsg);
+            //System.out.println(recivedMsg);
             String[] msgData = recivedMsg.split("_");
             
             boolean shipsPlaced = Boolean.parseBoolean(msgData[0]);
