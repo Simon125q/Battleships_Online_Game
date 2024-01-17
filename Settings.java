@@ -39,4 +39,8 @@ public interface Settings {
     public final int WRONG_PLACEMENT = 2;
     public final int PLACED_ALIVE = 3;
     public final int PLACED_DEAD = 4;
+
+    // server
+    public final int JOIN = 0;
+    public final int CREATE = 1;
 }
