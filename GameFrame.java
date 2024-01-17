@@ -28,9 +28,10 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
         super(NAME);
         try {
             int serverChoice = serverDecisionMessage();
-            //getIpAndPort();
-            initConnection(serverChoice);
             
+            initConnection(serverChoice);
+            getIpAndPort();
+
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setResizable(false);
 
@@ -63,8 +64,10 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
     }
 
     private void getIpAndPort() {
-        System.out.println("Please input the IP: ");
-		ip = scanner.nextLine();
+        if (!isServer) {
+            System.out.println("Please input the IP: ");
+            ip = scanner.nextLine();
+        }
 		System.out.println("Please input the port: ");
 		port = scanner.nextInt();
         while (port < 1 || port > 65535) {
