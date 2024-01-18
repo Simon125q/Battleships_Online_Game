@@ -33,6 +33,10 @@ public class Cell extends Rect implements Settings{
         isShown = true;
     }
 
+    public boolean isChecked() {
+        return isShown;
+    }
+
     public void setAsShip(Ship ship) {
         this.ship = ship;
     }

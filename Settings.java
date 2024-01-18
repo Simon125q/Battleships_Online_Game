@@ -3,6 +3,8 @@ import java.awt.Font;
 
 public interface Settings {
     
+    public static final String NAME = "BATTLESHIPS";
+
     public static final int TILE_W = 32;
     public static final int TILE_H = 32;
     public static final int TILE_ROWS = 25;

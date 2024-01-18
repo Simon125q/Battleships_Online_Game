@@ -11,13 +11,14 @@ import java.io.IOException;
 
 public class GamePanel extends JPanel implements MouseListener, MouseMotionListener, Settings {
     
-    public int gamePhase;
     private Grid radarGrid;
     private Grid playerGrid;
     private Ship shipToPlace;
     private int shipToPlaceIndex;
     private BufferedImage backgroundImage;
     private GameFrame game;
+
+    public int gamePhase;
     public InfoBar infoBar;
 
     public GamePanel(GameFrame game) {
@@ -53,10 +54,13 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
     public void makeShot(Position targePosition) {
         Position targetGridPos = radarGrid.getGridPosition(targePosition);
-        game.lastShot = new Position(targetGridPos);
-        game.sendData(true, true, false, targetGridPos.x, targetGridPos.y);
-        game.myTurn = false;
-        infoBar.update(OPP_TURN);
+        if (radarGrid.checkIfUncheckedCell(targetGridPos)) {
+            game.lastShot = new Position(targetGridPos);
+            game.sendData(true, true, false, targetGridPos.x, targetGridPos.y);
+            game.myTurn = false;
+            infoBar.update(OPP_TURN);
+        }
+        
     }
 
     public void checkMyShot(Position targetGridPos, boolean isHit) {

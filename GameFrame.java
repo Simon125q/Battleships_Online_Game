@@ -8,10 +8,7 @@ import javax.swing.JOptionPane;
 
 public class GameFrame extends JFrame implements KeyListener, Settings {
 
-    public static String NAME = "BATTLESHIPS";
-
     private Scanner scanner = new Scanner(System.in);
-
     private GameServer server;
     private GameClient client;
     private String ip = "localhost";
@@ -22,15 +19,15 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
     public boolean myTurn;
     public boolean opponentPlacedShips = false;
 
-    GamePanel gamePanel;
+    private GamePanel gamePanel;
 
     public GameFrame() {
         super(NAME);
         try {
-            int serverChoice = serverDecisionMessage();
+            serverDecisionMessage();
 
             getIpAndPort();
-            initConnection(serverChoice);
+            initConnection();
             
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setResizable(false);
@@ -52,7 +49,7 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
         GameFrame game = new GameFrame();
     }
 
-    private int serverDecisionMessage() {
+    private void serverDecisionMessage() {
         String[] options = new String[] {"Join Game", "Create Server"};
         String message = "Select if you want to join already existing server or create your own";
         int serverChoice = JOptionPane.showOptionDialog(null, message,
@@ -60,7 +57,12 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
                 null, options, options[0]);   
     
-        return serverChoice;
+        if (serverChoice == JOIN) {
+            isServer = false;
+        }
+        else {
+            isServer = true;
+        }
     }
 
     private void getIpAndPort() {
@@ -76,8 +78,8 @@ public class GameFrame extends JFrame implements KeyListener, Settings {
 		}
     }
 
-    private void initConnection(int serverChoice) throws IOException{
-        if (serverChoice == JOIN) {
+    private void initConnection() throws IOException{
+        if (!isServer) {
             client = new GameClient(ip, port, this);
             client.start();
             isServer = false;

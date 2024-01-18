@@ -115,6 +115,10 @@ public class Grid extends Rect implements Settings{
         }
     }
 
+    public boolean checkIfUncheckedCell(Position gridPosition) {
+        return !cells[gridPosition.x][gridPosition.y].isChecked();
+    }
+
     public void deepCopy(Grid otherGrid) {
         this.ships.clear();
         for (int shipIndex = 0; shipIndex < otherGrid.ships.size(); shipIndex++) {
